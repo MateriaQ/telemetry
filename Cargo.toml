@@ -1,0 +1,30 @@
+[package]
+name = "telemetry"
+version = "0.1.0"
+edition = "2024"
+description = "Privacy-preserving multi-app telemetry and live presence API for Spicetify extensions and web dashboards"
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/MateriaQ/telemetry"
+keywords = ["telemetry", "presence", "spicetify", "redis", "axum"]
+categories = ["web-programming", "network-programming"]
+readme = "README.md"
+
+[dependencies]
+askama = { version = "0.16.1", features = ["full"] }
+axum = "0.8.9"
+dotenvy = "0.15.7"
+hex = "0.4.3"
+hmac = "0.13.0"
+indexmap = "2.14.2"
+redis = { version = "1.7.0", features = ["connection-manager", "tokio-comp"] }
+rovo = { version = "0.4.9", features = ["swagger"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.149"
+sha2 = "0.11.0"
+subtle = "2.6.1"
+tokio = { version = "1.53.1", features = ["full"] }
+tower = { version = "0.5.3", features = ["util"] }
+tower-http = { version = "0.7.1", features = ["cors", "trace", "timeout", "compression-gzip", "fs", "normalize-path"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+uuid = { version = "1.26.1", features = ["v4", "v5"] }

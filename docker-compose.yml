@@ -1,0 +1,14 @@
+services:
+  valkey:
+    image: valkey/valkey:9.1.2-alpine
+    container_name: materiaq-telemetry-valkey
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    command: valkey-server --requirepass ${VALKEY_PASSWORD}
+    volumes:
+      - valkey_data:/data
+
+volumes:
+  valkey_data:

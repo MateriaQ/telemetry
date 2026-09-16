@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="preload" href="/users" as="fetch" crossorigin="anonymous">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MateriaQ Telemetry",
+    "url": "https://telemetry.materiaq.org/",
+    "description": "Privacy-preserving telemetry and real-time live-presence analytics dashboard for Spicetify extensions and web applications.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "MateriaQ",
+      "url": "https://github.com/MateriaQ"
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <section class="overview-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon-box">
+        <span class="kpi-live-indicator"></span>
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+          <circle cx="12" cy="12" r="2" />
+          <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5M19.1 4.9C23 8.8 23 15.1 19.1 19" />
+        </svg>
+      </div>
+      <div>
+        <div class="label-medium">Online Right Now</div>
+        <div id="global-live" class="kpi-value"><div class="skeleton-shimmer skeleton-kpi"></div></div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon-box">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <div>
+        <div class="label-medium">Total App Installs</div>
+        <div id="global-total" class="kpi-value"><div class="skeleton-shimmer skeleton-kpi"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="apps-list" id="apps-list">
+    {% for app in apps %}
+      {% let is_web = app.id == "web" %}
+      <article class="app-card" data-app-id="{{ app.id }}">
+        <div class="app-header">
+          <div class="app-identity">
+            <div class="app-avatar">
+              {% if app.id == "lyrics" %}
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg>
+              {% else if is_web %}
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              {% else %}
+                <svg class="icon" viewBox="0 0 24 24"><path d="m21 16-9 5-9-5V8l9-5 9 5v8Z"/><path d="m3.27 6.96 8.73 4.88 8.73-4.88M12 22.08V12"/></svg>
+              {% endif %}
+            </div>
+            <div>
+              <div class="app-title-wrap">
+                <h2 class="title-medium">{{ app.name }}</h2>
+                <span class="badge">{% if is_web %}Website{% else %}Extension{% endif %}</span>
+              </div>
+              <p class="body-medium">{{ app.description }}</p>
+            </div>
+          </div>
+          <div class="app-header-actions">
+            {% if let Some(website) = app.website %}
+              <a href="{{ website }}" target="_blank" rel="noopener noreferrer" class="app-link-btn" title="Website">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </a>
+            {% endif %}
+            {% if let Some(source_code) = app.source_code %}
+              <a href="{{ source_code }}" target="_blank" rel="noopener noreferrer" class="app-link-btn" title="Source Code">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric-cell">
+            <span class="label-medium">{% if is_web %}Active Visitors{% else %}Active Users{% endif %}</span>
+            <span class="metric-val accent-text" id="{{ app.id }}-live"><div class="skeleton-shimmer skeleton-metric-val"></div></span>
+          </div>
+          {% if !is_web %}
+            <div class="metric-cell">
+              <span class="label-medium">Total Installs</span>
+              <span class="metric-val" id="{{ app.id }}-total"><div class="skeleton-shimmer skeleton-metric-val"></div></span>
+            </div>
+          {% endif %}
+          <div class="metric-cell">
+            <span class="label-medium">Weekly Peak</span>
+            <span class="metric-val" id="{{ app.id }}-peak"><div class="skeleton-shimmer skeleton-metric-val"></div></span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header">
+            <span class="label-medium">Visitors This Week</span>
+            <span class="label-medium" id="{{ app.id }}-peak-badge">Peak: ...</span>
+          </div>
+          <div class="chart-bars" id="{{ app.id }}-chart">
+            <div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:35%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>
+            <div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:60%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>
+            <div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:45%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>
+            <div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:80%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>
+            <div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:55%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>
+            <div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:70%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>
+            <div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:90%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+
+  <section class="privacy-grid">
+    <div class="privacy-card retained">
+      <div class="privacy-card-title">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <h3 class="label-large">What We Count</h3>
+      </div>
+      <ul class="privacy-list">
+        <li>
+          <strong>Anonymous Tokens</strong>
+          <span>One-way UUID v5 for extensions; random session token for web visitors.</span>
+        </li>
+        <li>
+          <strong>Signed Pings</strong>
+          <span>Presence heartbeats authenticated with HMAC to prevent spam.</span>
+        </li>
+        <li>
+          <strong>Short-Lived Retention</strong>
+          <span>Live presence clears in 4 minutes. Weekly counts reset after 9 days.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="privacy-card excluded">
+      <div class="privacy-card-title">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+          <path d="m4.243 5.21 14.39 12.472" />
+        </svg>
+        <h3 class="label-large">What We Never Collect</h3>
+      </div>
+      <ul class="privacy-list">
+        <li>
+          <strong>No Personal Info</strong>
+          <span>Zero names, emails, passwords, or Spotify account details.</span>
+        </li>
+        <li>
+          <strong>No Listening History</strong>
+          <span>Zero playback events, song titles, queues, or searches.</span>
+        </li>
+        <li>
+          <strong>No IP Tracking</strong>
+          <span>Zero IP addresses logged, stored, or linked to user counts.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="privacy-note">
+    <svg class="icon" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4M12 8h.01" />
+    </svg>
+    <p><strong>Privacy Guarantee:</strong> All counts are 100% anonymous. We never track who you are, what you play, or where you connect from.</p>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function esc(s) {
+      return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function appIcon(id) {
+      if (id === "lyrics") {
+        return `<svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg>`;
+      }
+      if (id === "web") {
+        return `<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>`;
+      }
+      return `<svg class="icon" viewBox="0 0 24 24"><path d="m21 16-9 5-9-5V8l9-5 9 5v8Z"/><path d="m3.27 6.96 8.73 4.88 8.73-4.88M12 22.08V12"/></svg>`;
+    }
+
+    function skelBars() {
+      return [35, 60, 45, 80, 55, 70, 90].map((h) =>
+        `<div class="bar-slot"><div class="bar-wrap"><div class="skeleton-shimmer skeleton-bar-fill" style="height:${h}%"></div></div><div class="skeleton-shimmer skeleton-bar-label"></div></div>`
+      ).join("");
+    }
+
+    function ensureCards(apps) {
+      const c = document.getElementById("apps-list");
+      if (!c) return;
+      const cur = Array.from(c.children).map((x) => x.dataset.appId).filter(Boolean);
+      const next = apps.map((a) => a.id);
+      if (cur.length === next.length && cur.every((v, i) => v === next[i])) return;
+
+      const render = () => {
+        const existingMeta = {};
+        Array.from(c.querySelectorAll(".app-card")).forEach((card) => {
+          const id = card.dataset.appId;
+          if (!id) return;
+          existingMeta[id] = {
+            desc: card.querySelector(".body-medium")?.innerHTML || "",
+            actions: card.querySelector(".app-header-actions")?.innerHTML || "",
+          };
+        });
+
+        c.innerHTML = apps.map((a) => {
+          const isWeb = a.id === "web";
+          const cached = existingMeta[a.id] || {};
+          const webBtn = a.website ? `<a href="${encodeURI(a.website)}" target="_blank" rel="noopener noreferrer" class="app-link-btn" title="Website"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></a>` : "";
+          const srcBtn = a.source_code ? `<a href="${encodeURI(a.source_code)}" target="_blank" rel="noopener noreferrer" class="app-link-btn" title="Source Code"><svg class="icon" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>` : "";
+          const actionsHtml = cached.actions || `${webBtn}${srcBtn}`;
+          const descHtml = cached.desc ? `<p class="body-medium">${cached.desc}</p>` : (a.description ? `<p class="body-medium">${esc(a.description)}</p>` : "");
+          const total = a.total != null ? `<div class="metric-cell"><span class="label-medium">Total Installs</span><span class="metric-val" id="${a.id}-total"><div class="skeleton-shimmer skeleton-metric-val"></div></span></div>` : "";
+
+          return `<article class="app-card" data-app-id="${a.id}">
+            <div class="app-header">
+              <div class="app-identity">
+                <div class="app-avatar">${appIcon(a.id)}</div>
+                <div>
+                  <div class="app-title-wrap"><h2 class="title-medium">${esc(a.name)}</h2><span class="badge">${isWeb ? "Website" : "Extension"}</span></div>
+                  ${descHtml}
+                </div>
+              </div>
+              <div class="app-header-actions">${actionsHtml}</div>
+            </div>
+            <div class="metric-grid">
+              <div class="metric-cell"><span class="label-medium">${isWeb ? "Active Visitors" : "Active Users"}</span><span class="metric-val accent-text" id="${a.id}-live"><div class="skeleton-shimmer skeleton-metric-val"></div></span></div>
+              ${total}
+              <div class="metric-cell"><span class="label-medium">Weekly Peak</span><span class="metric-val" id="${a.id}-peak"><div class="skeleton-shimmer skeleton-metric-val"></div></span></div>
+            </div>
+            <div class="chart-container">
+              <div class="chart-header"><span class="label-medium">Visitors This Week</span><span class="label-medium" id="${a.id}-peak-badge">Peak: 0</span></div>
+              <div class="chart-bars" id="${a.id}-chart">${skelBars()}</div>
+            </div>
+          </article>`;
+        }).join("");
+      };
+
+      if (document.startViewTransition) document.startViewTransition(render);
+      else render();
+    }
+
+    function animCount(el, target) {
+      if (!el) return;
+      const hadSkeleton = el.querySelector(".skeleton-shimmer");
+      const start = Number(el.dataset.val || 0);
+      el.dataset.val = target;
+
+      if (hadSkeleton) {
+        el.textContent = target.toLocaleString();
+        return;
+      }
+
+      if (start === target) return;
+
+      const st = performance.now(), d = 300;
+      function step(now) {
+        const p = Math.min((now - st) / d, 1);
+        el.textContent = Math.round(start + (target - start) * (1 - Math.pow(1 - p, 3))).toLocaleString();
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function renderChart(id, hist, max) {
+      const c = document.getElementById(id);
+      if (!c) return;
+      if (!Array.isArray(hist) || hist.length === 0) {
+        if (!c.querySelector(".skeleton-bar-fill")) c.innerHTML = skelBars();
+        return;
+      }
+
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const top = Math.max(...hist.map((x) => x.count), 1);
+      if (c.children.length !== hist.length || c.querySelector(".skeleton-bar-fill")) {
+        c.innerHTML = hist.map(() => `<div class="bar-slot"><div class="bar-wrap"><div class="bar-fill" style="height:0%"><div class="tooltip"><strong></strong><span></span></div></div></div><span class="bar-label"></span></div>`).join("");
+      }
+
+      const slots = c.children;
+      requestAnimationFrame(() => {
+        hist.forEach((it, i) => {
+          const s = slots[i];
+          if (!s) return;
+          const fill = s.querySelector(".bar-fill"), tip = s.querySelector(".tooltip"), lbl = s.querySelector(".bar-label");
+          if (fill) {
+            fill.style.height = `${Math.max(8, Math.round((it.count / top) * 100))}%`;
+            fill.classList.toggle("is-peak", it.count === max && max > 0);
+          }
+          if (tip) {
+            tip.querySelector("strong").textContent = it.count.toLocaleString();
+            tip.querySelector("span").textContent = it.date;
+          }
+          if (lbl) {
+            const d = new Date(it.date + "T00:00:00Z");
+            lbl.textContent = isNaN(d.getTime()) ? it.date.slice(5) : days[d.getUTCDay()];
+          }
+        });
+      });
+    }
+
+    async function refresh() {
+      try {
+        const res = await fetch(`/users`, { signal: AbortSignal.timeout(2000) });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.live != null) animCount(document.getElementById("global-live"), Number(data.live));
+        if (data.total != null) animCount(document.getElementById("global-total"), Number(data.total));
+
+        if (Array.isArray(data.apps)) {
+          ensureCards(data.apps);
+          data.apps.forEach((a) => {
+            animCount(document.getElementById(`${a.id}-live`), Number(a.live));
+            animCount(document.getElementById(`${a.id}-total`), Number(a.total));
+            animCount(document.getElementById(`${a.id}-peak`), Number(a.weekly_max));
+            const b = document.getElementById(`${a.id}-peak-badge`);
+            if (b && a.weekly_max != null) b.textContent = `Peak: ${a.weekly_max.toLocaleString()}`;
+            renderChart(`${a.id}-chart`, a.weekly_history, a.weekly_max);
+          });
+        }
+      } catch (_) {}
+    }
+
+    async function authPing() {
+      try {
+        let res = await fetch(`/ping?app=web`, { headers: { "X-App-ID": "web" } });
+        if (res.status === 400 || res.status === 401) {
+          let cid = "";
+          try {
+            cid = localStorage.getItem("materiaq_client_id") || "";
+            if (!cid) {
+              cid = crypto.randomUUID();
+              localStorage.setItem("materiaq_client_id", cid);
+            }
+          } catch (_) {}
+
+          const tokenHeaders = { "X-App-ID": "web" };
+          if (cid) tokenHeaders["X-Client-ID"] = cid;
+
+          const tokenRes = await fetch(`/get-token`, { method: "POST", headers: tokenHeaders });
+          if (tokenRes.ok) {
+            await fetch(`/ping?app=web`, { headers: { "X-App-ID": "web" } });
+          }
+        }
+      } catch (_) {}
+    }
+
+    refresh();
+    authPing();
+    setInterval(authPing, 60000);
+    setInterval(refresh, 2000);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        refresh();
+        authPing();
+      }
+    });
+  </script>
+{% endblock %}

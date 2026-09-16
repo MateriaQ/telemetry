@@ -1,0 +1,16 @@
+# Robots.txt for telemetry.materiaq.org
+User-agent: *
+Allow: /
+Allow: /privacy
+Allow: /terms
+Allow: /favicon.svg
+Allow: /css/
+
+# Disallow API and operational endpoints from indexation
+Disallow: /ping
+Disallow: /get-token
+Disallow: /readyz
+Disallow: /healthz
+Disallow: /docs
+
+Sitemap: https://telemetry.materiaq.org/sitemap.xml

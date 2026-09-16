@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Terms of Service - MateriaQ Telemetry",
+    "url": "https://telemetry.materiaq.org/terms",
+    "description": "Terms of Service for MateriaQ Telemetry: Acceptable usage policies, AGPLv3 open-source licensing, rate-limiting guidelines, third-party extension terms, and service guarantees.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "MateriaQ Telemetry",
+      "url": "https://telemetry.materiaq.org/"
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="page-intro">
+    <div class="page-intro-header">
+      <div class="page-intro-icon">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="title-large">Terms of Service</h1>
+        <p class="body-medium">Effective Date: September 16, 2026</p>
+      </div>
+    </div>
+    <span class="badge">Open Source Terms</span>
+  </div>
+
+  <section class="legal-card">
+    <ul class="legal-list">
+      <li class="legal-item">
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing the MateriaQ Dashboard or using supported client extensions with telemetry enabled, you agree to be bound by these Terms of Service. If you do not agree to these terms, you can opt out at any time directly within the settings of your installed client extensions or by ceasing use of the dashboard.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>2. Service Scope &amp; Purpose</h2>
+        <p>MateriaQ Telemetry provides anonymous, real-time presence counting and aggregate usage statistics for open-source software and Spicetify extensions free of charge. The service does not require account creation, does not profile users, and retains only ephemeral presence signals.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>3. Supported Applications &amp; Separate Terms of Service</h2>
+        <p>MateriaQ Telemetry provides an ingestion and aggregation backend for specific client applications and extensions:</p>
+        <ul class="legal-sublist">
+          {% for app in custom_apps %}
+          <li>
+            <strong>{{ app.name }}</strong> (<code>{{ app.id }}</code>): {{ app.description }}
+            {% if let Some(url) = app.website %}
+              &bull; <a href="{{ url }}" target="_blank" rel="noopener noreferrer">Website</a>
+            {% endif %}
+            {% if let Some(repo) = app.source_code %}
+              &bull; <a href="{{ repo }}" target="_blank" rel="noopener noreferrer">Source Code</a>
+            {% endif %}
+          </li>
+          {% endfor %}
+          <li>
+            <strong>Telemetry Dashboard</strong> (<code>web</code>): Live public dashboard for observing active users and usage metrics &bull; <a href="/">View Dashboard</a>
+          </li>
+        </ul>
+        <p><strong>Independent Application Terms:</strong> Each custom application or extension listed above (including {% for app in custom_apps %}<strong>{{ app.name }}</strong>{% if !loop.last %}, {% endif %}{% endfor %}) is an independent project governed by its own separate Terms of Service, licensing, end-user agreements, and governance. <strong>These separate terms might not be the same as MateriaQ Telemetry&rsquo;s terms.</strong></p>
+        <p>MateriaQ Telemetry functions solely as a backend ingestion pipeline for anonymous metrics. MateriaQ does not develop, control, maintain, or warrant third-party extensions, their source repositories, their client-side behaviors, or any third-party services and APIs (such as external lyrics providers or metadata providers) that those extensions may interact with.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>4. Spotify &amp; Spicetify Disclaimers</h2>
+        <p>To avoid any ambiguity regarding trademarks, affiliation, and software licensing:</p>
+        <ul class="legal-sublist">
+          <li>
+            <strong>Spotify AB:</strong> <strong>Spotify</strong> is a registered trademark of <strong>Spotify AB</strong>. MateriaQ Telemetry is an independent open-source project and is <strong>not</strong> affiliated with, endorsed, sponsored, maintained, or certified by Spotify AB. Using Spotify and the official Spotify desktop/web clients is governed exclusively by <strong>Spotify&rsquo;s Terms and Conditions of Use</strong> and Spotify&rsquo;s Developer Policies. MateriaQ Telemetry does not modify, license, grant rights to, or assume responsibility for Spotify&rsquo;s software, audio streams, user accounts, or proprietary data.
+          </li>
+          <li>
+            <strong>Spicetify:</strong> <strong>Spicetify</strong> is an independent community open-source customization client for Spotify. MateriaQ Telemetry is not an official component or maintainer of Spicetify. Third-party extensions created for Spicetify (such as {% for app in custom_apps %}{{ app.name }}{% if !loop.last %}, {% endif %}{% endfor %}) interact with Spotify and Spicetify at the user&rsquo;s sole discretion and under their respective open-source licenses.
+          </li>
+        </ul>
+      </li>
+
+      <li class="legal-item">
+        <h2>5. Acceptable Use, Cryptographic Verification &amp; Rate Limits</h2>
+        <p>You agree to access the service solely within normal, intended operational limits. Prohibited activities include, but are not limited to:</p>
+        <ul class="legal-sublist">
+          <li>Sending forged telemetry pings, fabricated client headers, or invalid HMAC-SHA256 signatures.</li>
+          <li>Circumventing token-bucket rate limits or attempting denial-of-service (DDoS) attacks against the API.</li>
+          <li>Automated scraping, bulk polling beyond reasonable monitoring needs, or artificial traffic generation.</li>
+          <li>Exploiting the token generation endpoint to bypass per-IP daily identity caps.</li>
+        </ul>
+        <p>We reserve the right to throttle, rate-limit, or block abusive IP addresses or subnets without notice to maintain service stability and availability.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>6. Open Source Licensing (AGPLv3)</h2>
+        <p>The backend telemetry server software is licensed under the <strong>GNU Affero General Public License v3.0 (AGPL-3.0-or-later)</strong>. You are free to inspect, audit, modify, and self-host the source code in accordance with the AGPLv3 license terms.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>7. Disclaimer of Warranties (&ldquo;AS IS&rdquo;) &amp; Limitation of Liability</h2>
+        <p>The service and its dashboard are provided &ldquo;AS IS&rdquo; and &ldquo;AS AVAILABLE&rdquo; without warranties of any kind, whether express, implied, statutory, or otherwise, including warranties of merchantability, fitness for a particular purpose, or non-infringement. Maintainers and contributors shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of your access to or inability to use the service.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>8. Contact &amp; Governance</h2>
+        <p>Inquiries, bug reports, and security vulnerability disclosures may be submitted transparently through our official GitHub repository issue tracker at <a href="https://github.com/MateriaQ/telemetry" target="_blank" rel="noopener noreferrer">https://github.com/MateriaQ/telemetry</a>.</p>
+      </li>
+    </ul>
+
+    <div class="legal-callout">
+      <svg class="icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="16" x2="12" y2="12" />
+        <line x1="12" y1="8" x2="12.01" y2="8" />
+      </svg>
+      <p><strong>Open Source Boundaries:</strong> These terms ensure transparent, equitable access while protecting server stability, preserving user privacy, and clearly delineating boundaries between MateriaQ Telemetry, Spotify AB, Spicetify, and independent extensions like {% for app in custom_apps %}{{ app.name }}{% if !loop.last %}, {% endif %}{% endfor %}.</p>
+    </div>
+  </section>
+{% endblock %}

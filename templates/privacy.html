@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy - MateriaQ Telemetry",
+    "url": "https://telemetry.materiaq.org/privacy",
+    "description": "Privacy Policy for MateriaQ Telemetry: Zero PII, no IP tracking, 4-minute ephemeral presence windows, and GDPR/CCPA compliant data minimization.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "MateriaQ Telemetry",
+      "url": "https://telemetry.materiaq.org/"
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="page-intro">
+    <div class="page-intro-header">
+      <div class="page-intro-icon">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="title-large">Privacy Policy</h1>
+        <p class="body-medium">Effective Date: September 16, 2026</p>
+      </div>
+    </div>
+    <span class="badge">Privacy First</span>
+  </div>
+
+  <section class="legal-card">
+    <ul class="legal-list">
+      <li class="legal-item">
+        <h2>1. Scope &amp; Purpose</h2>
+        <p>MateriaQ Telemetry provides anonymous, real-time usage metrics and live presence statistics for open-source applications and Spicetify extensions. We collect minimal pseudonymous data strictly to measure active usage volume, maintain service reliability, and protect our infrastructure against automated abuse.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>2. Supported Applications &amp; Separate Privacy Policies</h2>
+        <p>MateriaQ Telemetry ingests telemetry pings from the following applications:</p>
+        <ul class="legal-sublist">
+          {% for app in custom_apps %}
+          <li>
+            <strong>{{ app.name }}</strong> (<code>{{ app.id }}</code>): {{ app.description }}
+            {% if let Some(url) = app.website %}
+              &bull; <a href="{{ url }}" target="_blank" rel="noopener noreferrer">Website</a>
+            {% endif %}
+            {% if let Some(repo) = app.source_code %}
+              &bull; <a href="{{ repo }}" target="_blank" rel="noopener noreferrer">Source Code</a>
+            {% endif %}
+          </li>
+          {% endfor %}
+          <li>
+            <strong>Telemetry Dashboard</strong> (<code>web</code>): Public dashboard displaying real-time metrics &bull; <a href="/">View Dashboard</a>
+          </li>
+        </ul>
+        <p><strong>First-Party Ecosystem:</strong> All listed applications ({% for app in custom_apps %}<strong>{{ app.name }}</strong>{% if !loop.last %}, {% endif %}{% endfor %}) are built and operated directly by MateriaQ. All pings transmitted to this server strictly follow the data minimization rules detailed below.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>3. Spotify &amp; Spicetify Privacy Boundaries</h2>
+        <p>We maintain strict operational and data boundaries regarding third-party platforms:</p>
+        <ul class="legal-sublist">
+          <li>
+            <strong>Spotify AB:</strong> <strong>Spotify</strong> is a registered trademark of <strong>Spotify AB</strong>. MateriaQ Telemetry is an independent open-source project and is not affiliated with Spotify AB. MateriaQ Telemetry <strong>never</strong> collects, receives, logs, or stores Spotify account passwords, credentials, email addresses, personal profiles, listening histories, currently playing tracks, saved playlists, or audio streams. Your use of Spotify is governed exclusively by <strong>Spotify&rsquo;s Privacy Policy</strong>.
+          </li>
+          <li>
+            <strong>Spicetify:</strong> Spicetify is a local client modification framework that runs entirely on your local device and does not operate or collect telemetry. MateriaQ Telemetry&rsquo;s privacy guarantees apply specifically to the MateriaQ Telemetry backend server and web dashboard.
+          </li>
+        </ul>
+      </li>
+
+      <li class="legal-item">
+        <h2>4. Legal Basis (GDPR Art. 6(1)(f))</h2>
+        <p>We process technical telemetry under <strong>Legitimate Interests</strong> solely to monitor service health, count concurrent active users, and prevent denial-of-service abuse without profiling, identifying, or tracking users across the web.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>5. Data Processed</h2>
+        <ul class="legal-sublist">
+          <li><strong>Pseudonymous Client IDs:</strong> Client IDs are normalized and converted into deterministic UUID v5 values, then hashed with SHA-256 before storage. Raw account IDs are never stored or logged.</li>
+          <li><strong>Dashboard Visitors:</strong> Browsers receive a random session token via an <code>HttpOnly</code> cookie to prevent double-counting active visits.</li>
+          <li><strong>Cryptographic Verification:</strong> Telemetry pings require an HMAC-SHA256 signature to reject forged or automated spam.</li>
+          <li><strong>IP Addresses:</strong> Used only in memory for rate limiting and DDoS protection. IP addresses are never stored in Redis or linked to user counts.</li>
+        </ul>
+      </li>
+
+      <li class="legal-item">
+        <h2>6. Data Minimization (What We Never Collect)</h2>
+        <p>We strictly enforce zero collection for personal and sensitive data. We never collect:</p>
+        <ul class="legal-sublist">
+          <li>Listening history, song playback, playlists, lyrics, or library data.</li>
+          <li>Real names, email addresses, passwords, or Spotify account credentials.</li>
+          <li>Hardware device fingerprints, MAC addresses, or canvas fingerprints.</li>
+          <li>Advertising trackers, marketing cookies, or tracking beacons.</li>
+        </ul>
+      </li>
+
+      <li class="legal-item">
+        <h2>7. Ephemeral Retention</h2>
+        <ul class="legal-sublist">
+          <li><strong>Live Presence:</strong> Active client timestamps expire automatically after <strong>4 minutes</strong> of inactivity.</li>
+          <li><strong>Daily Metrics:</strong> Aggregated daily counters expire automatically after <strong>9 days</strong>.</li>
+          <li><strong>Rate Limits:</strong> Token buckets expire after 1 hour of inactivity, and identity caps reset after 24 hours.</li>
+        </ul>
+      </li>
+
+      <li class="legal-item">
+        <h2>8. Your Rights &amp; Opt-Out</h2>
+        <p>You can opt out at any time by disabling telemetry in your extension settings. Under <strong>GDPR Article 11</strong>, because we do not store personal data or link counts to identities, stored metrics cannot be linked to any individual person.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>9. Data Sharing &amp; Infrastructure</h2>
+        <p>We do not sell, rent, monetize, or share telemetry data. Cloudflare is used strictly for edge caching, DNS, and DDoS mitigation.</p>
+      </li>
+
+      <li class="legal-item">
+        <h2>10. Open Source &amp; Inquiries</h2>
+        <p>All server source code, rate limits, and hashing logic are open source under the <strong>AGPLv3 license</strong> and verifiable on GitHub. Questions or security reports can be opened directly on our GitHub repository issue tracker at <a href="https://github.com/MateriaQ/telemetry" target="_blank" rel="noopener noreferrer">https://github.com/MateriaQ/telemetry</a>.</p>
+      </li>
+    </ul>
+
+    <div class="legal-callout">
+      <svg class="icon" viewBox="0 0 24 24">
+        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+      </svg>
+      <p><strong>Privacy Guarantee:</strong> One-way hashing ensures the telemetry server cannot identify individual user accounts, while clear third-party boundaries ensure users know how extension-level data is handled separately.</p>
+    </div>
+  </section>
+{% endblock %}

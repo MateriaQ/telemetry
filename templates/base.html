@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ meta_description }}" />
+    <meta name="keywords" content="MateriaQ, Telemetry, Analytics, Real-time analytics, Live presence" />
+    <meta name="author" content="MateriaQ" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="{{ canonical_url }}" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MateriaQ Telemetry" />
+    <meta property="og:title" content="{{ title }}" />
+    <meta property="og:description" content="{{ meta_description }}" />
+    <meta property="og:url" content="{{ canonical_url }}" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://telemetry.materiaq.org/favicon.svg" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{ title }}" />
+    <meta name="twitter:description" content="{{ meta_description }}" />
+    <meta name="twitter:image" content="https://telemetry.materiaq.org/favicon.svg" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f9ff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111318" />
+
+    <script>
+      (function(){
+        try {
+          const s = localStorage.getItem("materiaq_theme_mode");
+          const d = s ? s === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.classList.toggle("dark", d);
+          document.documentElement.classList.toggle("light", !d);
+        } catch (_) {}
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      {{ light_css|safe }}
+      {{ dark_css|safe }}
+      {{ main_css|safe }}
+      {% block styles %}{% endblock %}
+    </style>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <main class="container">
+      <header>
+      <a href="/" class="brand-wrapper">
+          <div class="brand-mark">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="a" x1="0%" x2="100%" y1="0%" y2="100%"><stop offset="0%" stop-color="#4d3d75"/><stop offset="100%" stop-color="#633b48"/></linearGradient><linearGradient id="b" x1="0%" x2="100%" y1="0%" y2="100%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#ffd8e4"/></linearGradient></defs><rect width="32" height="32" fill="url(#a)" rx="9"/><path fill="url(#b)" d="M401.724 366.846 231.793 654.262h78.532L431.45 444.836l31.945 49.486-93.618 161.128h77.646l121.57-209.822 124.23 209.031 74.984-.397-167.27-286.625h-62.115l-36.382 59.384-38.158-59.384z" transform="scale(.032)"/></svg>
+          </div>
+          <div class="brand-text-block">
+            <h1 class="display-brand">
+              <span class="brand-name">Materia<span class="brand-q">Q</span></span>
+              <span class="brand-sub">Telemetry</span>
+            </h1>
+            <p class="brand-tagline">Real-time counts. No accounts. Privacy by design.</p>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <button id="theme-toggle" class="icon-button" title="Toggle theme" aria-label="Toggle theme">
+            <svg id="theme-icon" class="icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2"/>
+              <path d="M12 20v2"/>
+              <path d="m4.93 4.93 1.41 1.41"/>
+              <path d="m17.66 17.66 1.41 1.41"/>
+              <path d="M2 12h2"/>
+              <path d="M20 12h2"/>
+              <path d="m6.34 17.66-1.41 1.41"/>
+              <path d="m19.07 4.93-1.41 1.41"/>
+            </svg>
+          </button>
+          <a href="https://github.com/MateriaQ/telemetry" target="_blank" rel="noopener noreferrer" class="icon-button" title="Source Code" aria-label="Source Code">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+              <path d="M9 18c-4.51 2-5-2-7-2" />
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      {% block content %}{% endblock %}
+
+      <footer>
+        <div class="footer-brand">
+          <span class="footer-brand-title">Materia<span class="brand-q">Q</span></span>
+          <span class="footer-badge">Telemetry</span>
+        </div>
+        <nav class="footer-nav" aria-label="Footer Navigation">
+          <a href="/" class="footer-chip {% if current_page == "index" %}current{% endif %}">Dashboard</a>
+          <a href="/terms" class="footer-chip {% if current_page == "terms" %}current{% endif %}">Terms</a>
+          <a href="/privacy" class="footer-chip {% if current_page == "privacy" %}current{% endif %}">Privacy</a>
+        </nav>
+        <div class="footer-actions">
+          <a href="https://github.com/MateriaQ/telemetry" target="_blank" rel="noopener noreferrer" class="footer-action-btn" title="Source Code">
+            <svg class="icon" style="width:16px;height:16px" viewBox="0 0 24 24">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+              <path d="M9 18c-4.51 2-5-2-7-2" />
+            </svg>
+            <span>Source</span>
+          </a>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      const THEME_KEY = "materiaq_theme_mode", html = document.documentElement;
+      const themeBtn = document.getElementById("theme-toggle"), themeIcon = document.getElementById("theme-icon");
+      const sunSvg = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>`;
+      const moonSvg = `<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>`;
+
+      function syncIcon() {
+        if (themeIcon) themeIcon.innerHTML = html.classList.contains("dark") ? sunSvg : moonSvg;
+      }
+      syncIcon();
+
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        if (!localStorage.getItem(THEME_KEY)) {
+          html.classList.toggle("dark", e.matches);
+          html.classList.toggle("light", !e.matches);
+          syncIcon();
+        }
+      });
+
+      if (themeBtn) {
+        themeBtn.addEventListener("click", (e) => {
+          const nextDark = !html.classList.contains("dark");
+          const r = themeBtn.getBoundingClientRect();
+          const x = `${((e.clientX || r.left + r.width / 2) / window.innerWidth) * 100}%`;
+          const y = `${((e.clientY || r.top + r.height / 2) / window.innerHeight) * 100}%`;
+          html.style.setProperty("--theme-button-cord", `${x} ${y}`);
+
+          const apply = () => {
+            html.classList.toggle("dark", nextDark);
+            html.classList.toggle("light", !nextDark);
+            syncIcon();
+            try { localStorage.setItem(THEME_KEY, nextDark ? "dark" : "light"); } catch (_) {}
+          };
+
+          if (document.startViewTransition) {
+            html.style.viewTransitionName = "changing-theme";
+            document.startViewTransition(apply).finished.finally(() => {
+              html.style.viewTransitionName = "";
+            });
+          } else {
+            apply();
+          }
+        });
+      }
+
+      document.querySelectorAll('a[href^="/"]').forEach((a) => {
+        a.addEventListener("pointerenter", () => {
+          const h = a.getAttribute("href");
+          if (h && !h.startsWith("#")) {
+            const p = document.createElement("link");
+            p.rel = "prefetch";
+            p.href = h;
+            document.head.appendChild(p);
+          }
+        }, { once: true });
+      });
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
