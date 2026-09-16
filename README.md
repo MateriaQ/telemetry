@@ -1,40 +1,44 @@
-# MateriaQ Telemetry
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="assets/icon-light.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/icon.svg">
+    <img alt="MateriaQ Telemetry" src="assets/icon.svg" width="80" height="80">
+  </picture>
 
-Privacy-preserving telemetry and live-presence API for Spicetify extensions and web dashboards. Zero PII, HMAC-authenticated, backed by Redis.
+  <h1>Materia<span style="color: #d0bcfe;">Q</span> Telemetry</h1>
 
-## Endpoints
+  <p>Privacy-preserving live presence and telemetry backend for Spicetify and web dashboards.</p>
 
-| Method | Route | Description | Auth / Headers |
+  <p>
+    <a href="./LICENCE"><img src="https://img.shields.io/badge/License-AGPLv3-66558E?labelColor=332F38" alt="License: AGPLv3"></a>
+    <img src="https://img.shields.io/badge/Language-Rust-D0BCFE?labelColor=332F38&logo=rust&logoColor=white" alt="Language: Rust">
+  </p>
+</div>
+
+---
+
+### ✦ Endpoints
+
+| Method | Route | Description | Auth |
 | --- | --- | --- | --- |
-| `POST` | `/get-token` | Mint `user_id` + `signature` | `X-Spotify-Id` or `X-App-ID: web` |
-| `GET`/`POST` | `/ping` | Record presence (4-min window) | `X-User-ID` + `X-User-Signature` (or cookie) |
-| `GET` | `/users` | Aggregated telemetry stats | Public |
-| `GET` | `/users/live` | Current live user count | Public |
-| `GET` | `/users/{app}` | App-specific stats (`lyrics`, `web`) | Public |
-| `GET` | `/healthz` | Liveness health probe | Public |
-| `GET` | `/readyz` | Readiness probe (Redis check) | `X-Admin-Token` |
+| `POST` | `/get-token` | Mint client credentials | `X-Spotify-Id` / `X-App-ID` |
+| `POST` | `/ping` | Record presence (4-min window) | Token / Cookie |
+| `GET` | `/users` | Aggregated telemetry metrics | Public |
+| `GET` | `/users/live` | Current active user count | Public |
+| `GET` | `/users/{app}` | App-filtered telemetry (`lyrics`, `web`) | Public |
+| `GET` | `/healthz`, `/readyz` | Liveness & Redis readiness probes | Public / Admin |
 
+### ✦ Environment Variables
 
-## Configuration
+| Variable | Default | Description |
+| --- | --- | --- |
+| `REDIS_URL` | *Required* | Redis or Valkey connection string |
+| `HMAC_SECRET` | *Required* | Secret key for signing client tokens |
+| `ADMIN_TOKEN` | *Required* | Bearer token for `/readyz` |
+| `PORT` | `8080` | HTTP port |
+| `ENABLE_DOCS` | `false` | Serve Swagger UI at `/docs` |
+| `COOKIE_SECURE`| `true` | Restrict session cookie to HTTPS |
 
-Configure environment variables in `.env`:
+### ✦ License
 
-### Required
-
-* `REDIS_URL`: Redis / Valkey connection string (e.g. `redis://127.0.0.1:6379`).
-* `ADMIN_TOKEN`: Secret administrative token for `/readyz` probe (minimum 12 characters).
-* `HMAC_SECRET`: Secret cryptographic key for signing client tokens (minimum 12 characters).
-
-### Optional
-
-* `PORT`: HTTP server listen port (default: `8080`).
-* `COOKIE_SECURE`: Sets `Secure` attribute on web authentication cookies (`true`/`false`, default: `true`). Set to `false` for local HTTP development.
-* `ENABLE_DOCS`: Serves OpenAPI Swagger documentation at `/docs` (`true`/`false`, default: `false`).
-* `IDENTITY_CAP_PER_IP`: Maximum distinct client identities minted per IP per 24 hours (default: `100`).
-* `REQUEST_TIMEOUT_SECS`: Global HTTP request timeout duration in seconds (default: `15`).
-* `RUST_LOG`: Log filter directives (default: `telemetry=info,tower_http=info,redis=info`).
-
-
-## License
-
-This project is licensed under the GNU AGPLv3 License. See [LICENCE](./LICENCE) for details.
+[GNU AGPLv3](./LICENCE)
